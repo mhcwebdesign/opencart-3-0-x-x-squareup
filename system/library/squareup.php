@@ -1,39 +1,30 @@
 <?php
-
-/*
-use GuzzleHttp\Client;
-use Square\SquareClient;
-use Square\Environments;
-use Square\Exceptions\ApiException;
-use Square\OAuth\Requests\ObtainTokenRequest;
-*/
-
 class Squareup {
-    private $session;
-    private $url;
-    private $config;
-    private $log;
-    private $customer;
-    private $currency;
-    private $registry;
+	private $session;
+	private $url;
+	private $config;
+	private $log;
+	private $customer;
+	private $currency;
+	private $registry;
 
-    const API_URL = 'https://connect.squareup.com';
+	const API_URL = 'https://connect.squareup.com';
 	const API_SANDBOX_URL = 'https://connect.squareupsandbox.com';
-    const API_VERSION = 'v2';
-    const ENDPOINT_AUTH = 'oauth2/authorize';
+	const API_VERSION = 'v2';
+	const ENDPOINT_AUTH = 'oauth2/authorize';
 	const ENDPOINT_CANCEL_PAYMENT = 'payments/%s/cancel';
 	const ENDPOINT_CAPTURE_PAYMENT = 'payments/%s/complete';
 	const ENDPOINT_CARDS = 'cards';
-    const ENDPOINT_CUSTOMERS = 'customers';
+	const ENDPOINT_CUSTOMERS = 'customers';
 	const ENDPOINT_CUSTOMERS_SEARCH = 'customers/search';
-    const ENDPOINT_LOCATIONS = 'locations';
+	const ENDPOINT_LOCATIONS = 'locations';
 	const ENDPOINT_ORDERS = 'orders';
 	const ENDPOINT_PAYMENTS = 'payments';
 	const ENDPOINT_PAYMENT_LINKS = 'online-checkout/payment-links';
 	const ENDPOINT_REFUND = 'refunds';
-    const ENDPOINT_TOKEN = 'oauth2/token';
-    const SCOPE = 'MERCHANT_PROFILE_READ PAYMENTS_READ SETTLEMENTS_READ CUSTOMERS_READ CUSTOMERS_WRITE';
-	const SQUARE_VERSION = '2025-10-16';
+	const ENDPOINT_TOKEN = 'oauth2/token';
+	const SCOPE = 'MERCHANT_PROFILE_READ PAYMENTS_READ SETTLEMENTS_READ CUSTOMERS_READ CUSTOMERS_WRITE';
+	const SQUARE_VERSION = '2026-01-22';
 
 	public function __construct($registry) {
 		// enable auto_load from system/library/squareup
