@@ -509,18 +509,17 @@ class ControllerExtensionPaymentSquareup extends Controller {
 	}
 
 	protected function firstPayment($order_info) {
+		// the first payment includes the regular items price plus first recurring prices
 		if ($this->cart->hasRecurringProducts()) {
 			$total = (float)$order_info['total'];
 			foreach ($this->cart->getProducts() as $product) {
 				if (!empty($product['recurring'])) {
-					$total_recurring_price = (float)$product['recurring']['price'] * $product['recurring']['duration'];
-					$total_recurring_price += (float)$product['recurring']['trial_price'] * $product['recurring']['trial_duration'];
-					$total_recurring_price = $total_recurring_price * $product['quantity'];
-					$total -= $total_recurring_price;
 					if ($product['recurring']['trial']) {
-						$total += (float)$product['recurring']['trial_price'] * $product['quantity'];
+						$recurring_price = $this->tax->calculate($product['recurring']['trial_price'] * $product['quantity'], $product['tax_class_id']);
+						$total += $recurring_price;
 					} else {
-						$total += (float)$product['recurring']['price'] * $product['quantity'];
+						$recurring_price = $this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id']);
+						$total += $recurring_price;
 					}
 				}
 			}
