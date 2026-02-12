@@ -297,7 +297,7 @@ class Squareup {
 		// see https://developer.squareup.com/reference/square/checkout-api/create-payment-link
 		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 		$location_id = ($is_sandbox) ? $this->config->get('payment_squareup_sandbox_location_id') : $this->config->get('payment_squareup_location_id');
-		$idempotency_key = uniqid();
+		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
 			'method' => 'POST',
@@ -395,7 +395,7 @@ class Squareup {
 		// see https://developer.squareup.com/reference/square/cards-api/create-card
 		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 
-		$idempotency_key = uniqid();
+		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
 			'method' => 'POST',
@@ -437,7 +437,7 @@ class Squareup {
 		// see https://developer.squareup.com/reference/square/customers-api/create-customer
 		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 
-		$idempotency_key = uniqid();
+		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
 			'method' => 'POST',
@@ -520,7 +520,7 @@ class Squareup {
 	public function refundPayment($access_token, $payment_id, $amount, $currency, $reason) {
 		// see https://developer.squareup.com/docs/payments-api/refund-payments
 		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-		$idempotency_key = uniqid();
+		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
 			'method' => 'POST',
@@ -546,7 +546,7 @@ class Squareup {
 		// see https://developer.squareup.com/reference/square/payments-api/create-payment
 		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 		$location_id = ($is_sandbox) ? $this->config->get('payment_squareup_sandbox_location_id') : $this->config->get('payment_squareup_location_id');
-		$idempotency_key = uniqid();
+		$idempotency_key = bin2hex(random_bytes(16));
 //		$autocomplete = !$this->cart->hasRecurringProducts() && $this->config->get('payment_squareup_delay_capture');
 		$autocomplete = $this->config->get('payment_squareup_delay_capture') ? false : true;
 
