@@ -520,13 +520,13 @@ class ModelExtensionPaymentSquareup extends Model {
 		} catch (\Squareup\Exception $e) {
 			$location = null;
 		}
-		if (isset($location['currency'])) {
+		if (isset($location['location']['currency'])) {
 			$this->load->model('localisation/currency');
 			$available_currencies = $this->model_localisation_currency->getCurrencies();
 			foreach ($available_currencies as $available_currency) {
-				if ($available_currency['code'] == $location['currency']) {
-					$amount = $this->currency->convert($order_amount, $currency, $location['currency']);
-					$currency = $location['currency'];
+				if ($available_currency['code'] == $location['location']['currency']) {
+					$amount = $this->currency->convert($order_amount, $currency, $location['location']['currency']);
+					$currency = $location['location']['currency'];
 					break;
 				}
 			}

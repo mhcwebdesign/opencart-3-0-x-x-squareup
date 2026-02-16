@@ -39,7 +39,14 @@ class Squareup {
 		$this->registry = $registry;
 	}
 
-	public function api($request_data, $is_sandbox=false) {
+	public function api($request_data) {
+		$is_sandbox = false;
+		if (isset($request_data['token'])) {
+			if ($request_data['token'] == $this->config->get('payment_squareup_sandbox_token')) {
+				$is_sandbox = true;
+			}
+		}
+
 		$url = ($is_sandbox) ? self::API_SANDBOX_URL : self::API_URL;
 
 		if (empty($request_data['no_version'])) {
@@ -205,8 +212,6 @@ class Squareup {
 
     public function listLocations($access_token, &$first_location_id) {
 		// see https://developer.squareup.com/reference/square/locations-api/list-locations
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$request_data = array(
 			'method' => 'GET',
 			'endpoint' => self::ENDPOINT_LOCATIONS,
@@ -214,7 +219,7 @@ class Squareup {
 			'token' => $access_token
 		);
 
-		$api_result = $this->api($request_data, $is_sandbox);
+		$api_result = $this->api($request_data);
 
 		$locations = array_filter($api_result['locations'], array($this, 'filterLocation'));
 
@@ -230,17 +235,14 @@ class Squareup {
 
 	public function retrieveLocation($access_token, $location_id) {
 		// see https://developer.squareup.com/reference/square/locations-api/retrieve-location
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$request_data = array(
 			'method' => 'GET',
 			'endpoint' => self::ENDPOINT_LOCATIONS.'/'.$location_id,
 			'auth_type' => 'Bearer',
 			'token' => $access_token
 		);
-		$api_result = $this->api($request_data, $is_sandbox);
-
-		return isset($api_result['location']) ? $api_result['location'] : null;
+		$api_result = $this->api($request_data);
+		return isset($api_result['location']) ? $api_result : null;
 	}
 
 	public function exchangeCodeForAccessAndRefreshTokens($code) {
@@ -269,33 +271,30 @@ class Squareup {
 
 	public function retrieveOrder($access_token, $order_id) {
 		// see https://developer.squareup.com/reference/square/orders-api/retrieve-order
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 		$request_data = array(
 			'method' => 'GET',
 			'endpoint' => self::ENDPOINT_ORDERS.'/'.$order_id,
 			'auth_type' => 'Bearer',
 			'token' => $access_token
 		);
-		$api_result = $this->api($request_data, $is_sandbox);
+		$api_result = $this->api($request_data);
 		return isset($api_result['order']) ? $api_result : null;
 	}
 
 	public function getPayment($access_token, $payment_id) {
 		// see https://developer.squareup.com/reference/square/payments-api/get-payment
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 		$request_data = array(
 			'method' => 'GET',
 			'endpoint' => self::ENDPOINT_PAYMENTS.'/'.$payment_id,
 			'auth_type' => 'Bearer',
 			'token' => $access_token
 		);
-		$api_result = $this->api($request_data, $is_sandbox);
+		$api_result = $this->api($request_data);
 		return isset($api_result['payment']) ? $api_result : null;
 	}
 
 	public function createPaymentLink($access_token, $amount, $currency, $redirect_url, $billing_address, $email, $phone, $item_summary) {
 		// see https://developer.squareup.com/reference/square/checkout-api/create-payment-link
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 		$location_id = ($is_sandbox) ? $this->config->get('payment_squareup_sandbox_location_id') : $this->config->get('payment_squareup_location_id');
 		$idempotency_key = bin2hex(random_bytes(16));
 
@@ -349,7 +348,7 @@ class Squareup {
 			)
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
@@ -369,13 +368,11 @@ class Squareup {
 			)
 		);
 
-		return $this->api($request_data,false);
+		return $this->api($request_data);
 	}
 
 	public function listCards($access_token, $customer_id) {
 		// see https://developer.squareup.com/reference/square/cards-api/list-cards
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$request_data = array(
 			'method' => 'GET',
 			'endpoint' => self::ENDPOINT_CARDS,
@@ -387,14 +384,12 @@ class Squareup {
 			)
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function createCard($access_token, $source_id, $verification_token, $customer_id, $billing_address) {
 		// see https://developer.squareup.com/reference/square/cards-api/create-card
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
@@ -413,14 +408,12 @@ class Squareup {
 			)
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function disableCard($access_token, $card_id) {
 		// see https://developer.squareup.com/reference/square/cards-api/disable-card
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-		
 		$request_data = array(
 			'method' => 'POST',
 			'endpoint' => self::ENDPOINT_CARDS . "/$card_id/disable",
@@ -429,14 +422,12 @@ class Squareup {
 			'parameters' => array()
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function createCustomer($access_token, $billing_address, $email, $phone) {
 		// see https://developer.squareup.com/reference/square/customers-api/create-customer
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
@@ -454,14 +445,12 @@ class Squareup {
 			)
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function searchCustomers($access_token, $email, $phone) {
 		// see https://developer.squareup.com/reference/square/customers-api/search-customers
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$request_data = array(
 			'method' => 'POST',
 			'endpoint' => self::ENDPOINT_CUSTOMERS_SEARCH,
@@ -481,14 +470,12 @@ class Squareup {
 			)
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function completePayment($access_token, $payment_id) {
 		// see https://developer.squareup.com/reference/square/payments-api/complete-payment
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$request_data = array(
 			'method' => 'POST',
 			'endpoint' => str_replace('%s', $payment_id, self::ENDPOINT_CAPTURE_PAYMENT),
@@ -497,14 +484,12 @@ class Squareup {
 			'parameters' => array()
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function cancelPayment($access_token, $payment_id) {
 		// see https://developer.squareup.com/reference/square/payments-api/cancel-payment
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
-
 		$request_data = array(
 			'method' => 'POST',
 			'endpoint' => str_replace('%s', $payment_id, self::ENDPOINT_CANCEL_PAYMENT),
@@ -513,13 +498,12 @@ class Squareup {
 			'parameters' => array()
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
 	public function refundPayment($access_token, $payment_id, $amount, $currency, $reason) {
 		// see https://developer.squareup.com/docs/payments-api/refund-payments
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
 		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
@@ -538,13 +522,13 @@ class Squareup {
 			)
 		);
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 
-	public function createPayment($access_token, $amount, $currency, $billing_address, $email, $phone, $source_id, $reference_id, $statement_description_identifier, $customer_id='') {
+	public function createPayment($access_token, $amount, $currency, $billing_address, $email, $phone, $source_id, $reference_id, $statement_description_identifier, $customer_id='', $verification_token='') {
 		// see https://developer.squareup.com/reference/square/payments-api/create-payment
-		$is_sandbox = ($access_token == $this->config->get('payment_squareup_sandbox_token')) ? true : false;
+		$is_sandbox = $this->config->get('payment_squareup_enable_sandbox') ? true : false;
 		$location_id = ($is_sandbox) ? $this->config->get('payment_squareup_sandbox_location_id') : $this->config->get('payment_squareup_location_id');
 		$idempotency_key = bin2hex(random_bytes(16));
 //		$autocomplete = !$this->cart->hasRecurringProducts() && $this->config->get('payment_squareup_delay_capture');
@@ -576,6 +560,10 @@ class Squareup {
 			)
 		);
 
+		if ($verification_token) {
+			$request_data['parameters']['verification_token'] = $verification_token;
+		}
+
 		if ($this->startsWith($source_id,'ccof:')) {
 			// source_id refers to a customer card on file, e.g. for a recurring payment
 			$request_data['parameters']['customer_id'] = $customer_id;
@@ -583,7 +571,7 @@ class Squareup {
 			$request_data['parameters']['customer_details']['customer_initiated'] = false;
 		}
 
-		$result = $this->api($request_data, $is_sandbox);
+		$result = $this->api($request_data);
 		return $result;
 	}
 

@@ -221,6 +221,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 
 
 	public function processPayment() {
+		$this->log->write("ControllerExtensionPaymentSquareup::processPayment: this->request->post='".print_r($this->request->post,true)."'");
 		$this->load->language('extension/payment/squareup');
 
 		$this->load->model('extension/payment/squareup');
@@ -282,7 +283,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 			// call the createPayment API with given source_id to process the payment
 			try {
 				$billing_address = $this->model_extension_payment_squareup->getBillingAddress($order_info);
-				$payment = $this->squareup->createPayment($access_token, $amount, $currency, $billing_address, $email, $phone, $source_id, $reference_id, $statement_description_identifier);
+				$payment = $this->squareup->createPayment($access_token, $amount, $currency, $billing_address, $email, $phone, $source_id, $reference_id, $statement_description_identifier, '', $verification_token);
 			} catch (\Squareup\Exception $e) {
 				if ($e->isCurlError()) {
 					$error = $this->language->get('text_token_issue_customer_error');

@@ -141,7 +141,7 @@ class ControllerExtensionRecurringSquareup extends Controller {
 				try {
 					$customers = $this->squareup->searchCustomers($access_token, $email, $phone);
 					$customer_id = isset($customers['customers'][0]['id']) ? $customers['customers'][0]['id'] : '';
-					$payment = $this->squareup->createPayment($access_token, $payment_gateway_amount, $payment_gateway_currency, $billing_address, $email, $phone, $source_id, $reference_id, $statement_description_identifier, $customer_id);
+					$payment = $this->squareup->createPayment($access_token, $payment_gateway_amount, $payment_gateway_currency, $billing_address, $email, $phone, $source_id, $reference_id, $statement_description_identifier, $customer_id, '');
 				} catch (\Squareup\Exception $e) {
 					if ($e->isCurlError()) {
 						$error = $this->language->get('text_token_issue_customer_error');
