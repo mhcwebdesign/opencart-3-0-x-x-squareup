@@ -221,7 +221,6 @@ class ControllerExtensionPaymentSquareup extends Controller {
 
 
 	public function processPayment() {
-		$this->log->write("ControllerExtensionPaymentSquareup::processPayment: this->request->post='".print_r($this->request->post,true)."'");
 		$this->load->language('extension/payment/squareup');
 
 		$this->load->model('extension/payment/squareup');
