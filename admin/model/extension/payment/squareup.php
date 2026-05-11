@@ -154,7 +154,7 @@ class ModelExtensionPaymentSquareup extends Model {
 		$sql .= "`user_agent` varchar(255) NOT NULL, ";
 		$sql .= "PRIMARY KEY (`squareup_payment_id`), ";
 		$sql .= "KEY `opencart_order_id` (`opencart_order_id`) ";
-		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
+		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
 		$this->db->query($sql);
 	}
     
