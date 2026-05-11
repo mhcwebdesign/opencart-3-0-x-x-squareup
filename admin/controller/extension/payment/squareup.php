@@ -72,7 +72,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 
 			if (isset($this->request->get['save_and_auth'])) {
 				$auth_link = $this->squareup->authLink($this->request->post['payment_squareup_client_id']);
-				$this->response->redirect();
+				$this->response->redirect($auth_link);
 			} else {
 				$this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
 			}
