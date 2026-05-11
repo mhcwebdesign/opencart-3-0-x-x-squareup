@@ -117,44 +117,45 @@ class ModelExtensionPaymentSquareup extends Model {
 	}
 
 	public function createTables() {
-		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "squareup_payment` (
-			`squareup_payment_id` int NOT NULL AUTO_INCREMENT,
-			`opencart_order_id` int NOT NULL,
-			`payment_id` varchar(192) NOT NULL,
-			`merchant_id` varchar(255) NOT NULL,
-			`location_id` varchar(50) NOT NULL,
-			`order_id` varchar(192) NOT NULL,
-			`customer_id` varchar(191) NOT NULL,
-			`created_at` varchar(32) NOT NULL,
-			`updated_at` varchar(32) NOT NULL,
-			`amount` bigint NOT NULL DEFAULT '0',
-			`currency` char(3) NOT NULL,
-			`status` varchar(50) NOT NULL,
-			`source_type` varchar(50) NOT NULL,
-			`square_product` varchar(16) NOT NULL,
-			`application_id` varchar(255) NOT NULL,
-			`refunded_amount` bigint NOT NULL DEFAULT '0',
-			`refunded_currency` char(3) NOT NULL DEFAULT '',
-			`card_fingerprint` varchar(255) NOT NULL,
-			`first_name` varchar(300) NOT NULL,
-			`last_name` varchar(300) NOT NULL,
-			`address_line_1` varchar(500) NOT NULL,
-			`address_line_2` varchar(500) NOT NULL,
-			`address_line_3` varchar(500) NOT NULL,
-			`locality` varchar(300) NOT NULL,
-			`sublocality` varchar(300) NOT NULL,
-			`sublocality_2` varchar(300) NOT NULL,
-			`sublocality_3` varchar(300) NOT NULL,
-			`administrative_district_level_1` varchar(200) NOT NULL,
-			`administrative_district_level_2` varchar(200) NOT NULL,
-			`administrative_district_level_3` varchar(200) NOT NULL,
-			`postal_code` varchar(12) NOT NULL,
-			`country` char(2) NOT NULL DEFAULT 'ZZ',
-			`ip` varchar(40) NOT NULL,
-			`user_agent` varchar(255) NOT NULL,
-			PRIMARY KEY (`squareup_payment_id`),
-			KEY `opencart_order_id` (`opencart_order_id`);
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;");
+		$sql  = "CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "squareup_payment` ( ";
+		$sql .= "`squareup_payment_id` int NOT NULL AUTO_INCREMENT, ";
+		$sql .= "`opencart_order_id` int NOT NULL, ";
+		$sql .= "`payment_id` varchar(192) NOT NULL, ";
+		$sql .= "`merchant_id` varchar(255) NOT NULL, ";
+		$sql .= "`location_id` varchar(50) NOT NULL, ";
+		$sql .= "`order_id` varchar(192) NOT NULL, ";
+		$sql .= "`customer_id` varchar(191) NOT NULL, ";
+		$sql .= "`created_at` varchar(32) NOT NULL, ";
+		$sql .= "`updated_at` varchar(32) NOT NULL, ";
+		$sql .= "`amount` bigint NOT NULL DEFAULT '0', ";
+		$sql .= "`currency` char(3) NOT NULL, ";
+		$sql .= "`status` varchar(50) NOT NULL, ";
+		$sql .= "`source_type` varchar(50) NOT NULL, ";
+		$sql .= "`square_product` varchar(16) NOT NULL, ";
+		$sql .= "`application_id` varchar(255) NOT NULL, ";
+		$sql .= "`refunded_amount` bigint NOT NULL DEFAULT '0', ";
+		$sql .= "`refunded_currency` char(3) NOT NULL DEFAULT '', ";
+		$sql .= "`card_fingerprint` varchar(255) NOT NULL, ";
+		$sql .= "`first_name` varchar(300) NOT NULL, ";
+		$sql .= "`last_name` varchar(300) NOT NULL, ";
+		$sql .= "`address_line_1` varchar(500) NOT NULL, ";
+		$sql .= "`address_line_2` varchar(500) NOT NULL, ";
+		$sql .= "`address_line_3` varchar(500) NOT NULL, ";
+		$sql .= "`locality` varchar(300) NOT NULL, ";
+		$sql .= "`sublocality` varchar(300) NOT NULL, ";
+		$sql .= "`sublocality_2` varchar(300) NOT NULL, ";
+		$sql .= "`sublocality_3` varchar(300) NOT NULL, ";
+		$sql .= "`administrative_district_level_1` varchar(200) NOT NULL, ";
+		$sql .= "`administrative_district_level_2` varchar(200) NOT NULL, ";
+		$sql .= "`administrative_district_level_3` varchar(200) NOT NULL, ";
+		$sql .= "`postal_code` varchar(12) NOT NULL, ";
+		$sql .= "`country` char(2) NOT NULL DEFAULT 'ZZ', ";
+		$sql .= "`ip` varchar(40) NOT NULL, ";
+		$sql .= "`user_agent` varchar(255) NOT NULL, ";
+		$sql .= "PRIMARY KEY (`squareup_payment_id`), ";
+		$sql .= "KEY `opencart_order_id` (`opencart_order_id`) ";
+		$sql .= ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;";
+		$this->db->query($sql);
 	}
     
 	public function dropTables() {

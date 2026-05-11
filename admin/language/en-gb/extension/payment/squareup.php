@@ -57,7 +57,7 @@ $_['text_debug_help']                                   = 'API requests and resp
 $_['text_debug_label']                                  = 'Debug Logging';
 $_['text_delay_capture_help']                           = 'Authorize payments only, or authorize and capture payments automatically';
 $_['text_delay_capture_label']                          = 'Delay capture';
-$_['text_disabled_connect_help_text']                   = 'The client id and secret are required fields.';
+$_['text_disabled_connect_help_text']                   = 'The <b>Application ID</b> and <b>OAuth Application Secret</b> are required fields.';
 $_['text_edit_heading']                                 = 'Edit Square';
 $_['text_enable_sandbox_help']                          = 'Enable sandbox mode for testing payments';
 $_['text_enable_sandbox_label']                         = 'Enable sandbox mode';
@@ -118,6 +118,7 @@ $_['text_sandbox_enabled_label']                        = 'Enabled';
 $_['text_sandbox_section_heading']                      = 'Square Sandbox Settings';
 $_['text_select_location']                              = 'Select location';
 $_['text_settings_section_heading']                     = 'Square Settings';
+$_['text_squareup']                                     = '<img src="view/image/payment/squareup.png" alt="Square" title="Square" style="border: 1px solid #EEEEEE;" />';
 $_['text_success']                                      = 'Success: You have modified Square payment module!';
 $_['text_success_capture']                              = 'Payment successfully captured!';
 $_['text_success_refresh']                              = 'Payment details successfully reloaded!';
