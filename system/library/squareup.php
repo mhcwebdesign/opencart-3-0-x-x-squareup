@@ -295,7 +295,11 @@ class Squareup {
 
 	public function createPaymentLink($access_token, $amount, $currency, $redirect_url, $billing_address, $email, $phone, $item_summary) {
 		// see https://developer.squareup.com/reference/square/checkout-api/create-payment-link
-		$location_id = ($is_sandbox) ? $this->config->get('payment_squareup_sandbox_location_id') : $this->config->get('payment_squareup_location_id');
+		if ($access_token == $this->config->get('payment_squareup_sandbox_token')) {
+			$location_id = $this->config->get('payment_squareup_sandbox_location_id');
+		} else {
+			$location_id = $this->config->get('payment_squareup_location_id');
+		}
 		$idempotency_key = bin2hex(random_bytes(16));
 
 		$request_data = array(
