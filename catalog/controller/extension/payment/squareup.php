@@ -104,10 +104,8 @@ class ControllerExtensionPaymentSquareup extends Controller {
 			list($amount,$currency) = $this->model_extension_payment_squareup->getAmountAndCurrency($order_info['total']);
 
 			if ($this->config->get('payment_squareup_enable_sandbox')) {
-				$location_id = $this->config->get('payment_squareup_sandbox_location_id');
 				$access_token = $this->config->get('payment_squareup_sandbox_token');
 			} else {
-				$location_id = $this->config->get('payment_squareup_location_id');
 				$access_token = $this->config->get('payment_squareup_token');
 			}
 

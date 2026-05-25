@@ -18,7 +18,7 @@
 <script type="text/javascript">
 (function() {
     async function initializeSquare() {
-        console.log("Attempting to initialize Square...");
+        // console.log("Attempting to initialize Square...");
         
         try {
             const payments = Square.payments('{{ application_id }}', '{{ location_id }}');
@@ -40,7 +40,7 @@
                     const result = await card.tokenize();
 
                     if (result.status === 'OK') {
-                        console.log('Source ID:', result.token);
+                        // console.log('Source ID:', result.token);
 
                         // 2. Perform verification
                         const verificationDetails = {
@@ -96,7 +96,7 @@
                 }
 
             });
-            console.log("Square initialized successfully");
+            //console.log("Square initialized successfully");
         } catch (e) {
             console.error("Square initialization failed: ", e);
         }
