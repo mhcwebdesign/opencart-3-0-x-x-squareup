@@ -106,7 +106,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 			if ($this->config->get('payment_squareup_enable_sandbox')) {
 				$access_token = $this->config->get('payment_squareup_sandbox_token');
 			} else {
-				$access_token = $this->config->get('payment_squareup_token');
+				$access_token = $this->config->get('payment_squareup_access_token');
 			}
 
 			$redirect_url = $this->url->link('extension/payment/squareup/success', '', true);
@@ -172,7 +172,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		if ($this->config->get('payment_squareup_enable_sandbox')) {
 			$access_token = $this->config->get('payment_squareup_sandbox_token');
 		} else {
-			$access_token = $this->config->get('payment_squareup_token');
+			$access_token = $this->config->get('payment_squareup_access_token');
 		}
 		if (!isset($square_payment_link['payment_link']['order_id'])) {
 			$this->response->redirect($this->url->link('checkout/checkout', '', true));
@@ -271,7 +271,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		if ($this->config->get('payment_squareup_enable_sandbox')) {
 			$access_token = $this->config->get('payment_squareup_sandbox_token');
 		} else {
-			$access_token = $this->config->get('payment_squareup_token');
+			$access_token = $this->config->get('payment_squareup_access_token');
 		}
 
 		$payment = null;

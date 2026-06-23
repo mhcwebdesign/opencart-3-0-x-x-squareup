@@ -509,7 +509,7 @@ class ModelExtensionPaymentSquareup extends Model {
 			$access_token = $this->config->get('payment_squareup_sandbox_token');
 		} else {
 			$location_id = $this->config->get('payment_squareup_location_id');
-			$access_token = $this->config->get('payment_squareup_token');
+			$access_token = $this->config->get('payment_squareup_access_token');
 		}
 
 		// if there is a location and its currency is also available on this OpenCart server

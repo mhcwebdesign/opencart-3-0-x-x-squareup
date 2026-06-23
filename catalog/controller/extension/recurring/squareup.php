@@ -79,6 +79,7 @@ class ControllerExtensionRecurringSquareup extends Controller {
 		header("Connection: close");
 		header("Content-Encoding: none");
 		ob_end_flush();
+		ob_flush();
 		flush();
 
 		// 4. (Optional) If using PHP-FPM, this is the most reliable way
@@ -124,7 +125,7 @@ class ControllerExtensionRecurringSquareup extends Controller {
 				if ($this->config->get('payment_squareup_enable_sandbox')) {
 					$access_token = $this->config->get('payment_squareup_sandbox_token');
 				} else {
-					$access_token = $this->config->get('payment_squareup_token');
+					$access_token = $this->config->get('payment_squareup_access_token');
 				}
 
 				$recurring_price = $recurring['recurring_price'];
