@@ -79,7 +79,6 @@ class ControllerExtensionRecurringSquareup extends Controller {
 		header("Connection: close");
 		header("Content-Encoding: none");
 		ob_end_flush();
-		ob_flush();
 		flush();
 
 		// 4. (Optional) If using PHP-FPM, this is the most reliable way
