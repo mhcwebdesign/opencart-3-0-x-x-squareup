@@ -396,20 +396,26 @@ class Squareup {
 		// see https://developer.squareup.com/reference/square/cards-api/create-card
 		$idempotency_key = bin2hex(random_bytes(16));
 
-		$request_data = array(
-			'method' => 'POST',
-			'endpoint' => self::ENDPOINT_CARDS,
-			'auth_type' => 'Bearer',
-			'token' => $access_token,
-			'parameters' => array(
-				'idempotency_key' => $idempotency_key,
-				'source_id' => $source_id,
-				'verification_token' => $verification_token,
-				'card' => array(
-					'customer_id' => $customer_id,
-					'billing_address' => ($billing_address) ? $billing_address : array(),
-				)
+		$parameters = array(
+			'idempotency_key' => $idempotency_key,
+			'source_id'       => $source_id,
+			'card'            => array(
+				'customer_id'     => $customer_id,
+				'billing_address' => ($billing_address) ? $billing_address : array(),
 			)
+		);
+
+		// Only inject the verification_token parameter if it is present and not empty
+		if (!empty($verification_token)) {
+			$parameters['verification_token'] = $verification_token;
+		}
+
+		$request_data = array(
+			'method'     => 'POST',
+			'endpoint'   => self::ENDPOINT_CARDS,
+			'auth_type'  => 'Bearer',
+			'token'      => $access_token,
+			'parameters' => $parameters
 		);
 
 		$result = $this->api($request_data);
@@ -558,8 +564,8 @@ class Squareup {
 				'buyer_phone_number' => $phone,
 				'statement_description_identifier' => $statement_description_identifier,
 				'customer_details' => array(
-					'customer_initiated' => true,
-					'seller_keyed_in' => false
+					'customer_initiated' => true
+//					'seller_keyed_in' => false
 				)
 			)
 		);
@@ -625,16 +631,32 @@ class Squareup {
 	}
 
 	public function phoneFormat($raw_number, $country_code) {
-		require( DIR_SYSTEM.'library/squareup/vendor/autoload.php' );
+		require_once( DIR_SYSTEM . 'library/squareup/vendor/autoload.php' );
 
 		$phone_util = libphonenumber\PhoneNumberUtil::getInstance();
 		try {
 			$number_proto = $phone_util->parse($raw_number, $country_code);
+			
+			// 1. STricter Check: isValidNumber verifies the number type, prefix, and full length
+			if (!$phone_util->isValidNumber($number_proto)) {
+				return ''; 
+			}
+
 			$result = $phone_util->format($number_proto, libphonenumber\PhoneNumberFormat::E164);
+			
+			// 2. Square Safety Guard: Strip the '+' and count the actual digits
+			$digit_count = strlen(preg_replace('/\D/', '', $result));
+			
+			// Square API strictly requires between 9 and 16 digits
+			if ($digit_count >= 9 && $digit_count <= 16) {
+				return $result;
+			}
+			
+			return ''; // Drop it if it falls outside Square's constraints
+			
 		} catch (libphonenumber\NumberParseException $e) {
-			$result = $raw_number;
+			return '';
 		}
-		return $result;
 	}
 
 	protected function startsWith($haystack, $needle) {

@@ -293,8 +293,8 @@ class ModelExtensionPaymentSquareup extends Model {
 
 		if (!empty($billing_country_info)) {
 			$billing_address = array(
-				'first_name' => $order_info['payment_firstname'],
-				'last_name' => $order_info['payment_lastname'],
+//				'first_name' => $order_info['payment_firstname'],
+//				'last_name' => $order_info['payment_lastname'],
 				'address_line_1' => $order_info['payment_address_1'],
 				'address_line_2' => $order_info['payment_address_2'],
 				'address_line_3' => '',
@@ -306,8 +306,8 @@ class ModelExtensionPaymentSquareup extends Model {
 				'administrative_district_level_2' => '',
 				'administrative_district_level_3' => '',
 				'postal_code' => $order_info['payment_postcode'],
-				'country' => $billing_country_info['iso_code_2'],
-				'organization' => $order_info['payment_company']
+				'country' => $billing_country_info['iso_code_2']
+//				'organization' => $order_info['payment_company']
 			);
 		} else {
 			$error = $this->language->get('error_missing_billing_address');

@@ -58,7 +58,8 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		$data['country_code'] = $order_info['payment_iso_code_2'];
 		$data['is_sandbox'] = $this->config->get('payment_squareup_enable_sandbox');
 		$data['currency'] = $currency;
-		$data['amount'] = $amount;
+		$data['amount'] = $this->currency->format($amount, $currency, 1, false);
+
 		if ($this->cart->hasRecurringProducts()) {
 			if ($amount > 0) {
 				$data['intent'] = 'CHARGE_AND_STORE';
@@ -231,8 +232,8 @@ class ControllerExtensionPaymentSquareup extends Controller {
 
 		if (empty($this->request->post['source_id'])) {
 			$this->session->data['error'] = $this->language->get('error_missing_source_id');
-		} else if (empty($this->request->post['verification_token'])) {
-			$this->session->data['error'] = $this->language->get('error_missing_verification_token');
+//		} else if (empty($this->request->post['verification_token'])) {
+//			$this->session->data['error'] = $this->language->get('error_missing_verification_token');
 		} else if (empty($this->session->data['squareup_intent'])) {
 			$this->session->data['error'] = $this->language->get('error_missing_intent');
 		} else if (!isset($this->session->data['squareup_amount'])) {
@@ -251,7 +252,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		}
 
 		$source_id = $this->request->post['source_id'];
-		$verification_token = $this->request->post['verification_token'];
+		$verification_token = empty($this->request->post['verification_token']) ? '' : $this->request->post['verification_token'];
 		$intent = $this->session->data['squareup_intent'];
 		$amount = $this->session->data['squareup_amount'];
 		$currency = $this->session->data['squareup_currency'];

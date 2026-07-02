@@ -44,6 +44,7 @@
 
                         // 2. Perform verification
                         const verificationDetails = {
+                            locationId: '{{ location_id }}',
                             {% if intent != 'STORE' %}
                             amount: '{{ amount }}', // Amount as a string
                             {% endif %}
@@ -58,34 +59,46 @@
                                 email: '{{ email }}',
                                 phone: '{{ phone }}',
                                 city: '{{ city }}',
-                                state: '{{ state }}',
+                                state: '{{ country_code|upper == "GB" ? '' : state|default('') }}',
                                 postalCode: '{{ postal_code }}',
-                                countryCode: '{{ country_code }}',
+                                countryCode: '{{ country_code|upper }}',
                             },
                         };
                         
                         const verificationResult = await payments.verifyBuyer(result.token, verificationDetails);
-                        
-                        // 3. Send BOTH tokens to the PHP controller
-                        $.ajax({
-                            url: '{{ squareup_process_payment }}',
-                            type: 'post',
-                            data: { 
-                                source_id: result.token,
-                                verification_token: verificationResult.token // CRITICAL for STORE intent
-                            },
-                            dataType: 'json',
-                            success: function(json) {
-                                if (json['redirect']) {
-                                    location = json['redirect'];	
+
+                        if (verificationResult && verificationResult.token) {
+                           
+                            // 3. Send BOTH tokens to the PHP controller
+                            $.ajax({
+                                url: '{{ squareup_process_payment }}',
+                                type: 'post',
+                                data: { 
+                                    source_id: result.token,
+                                    verification_token: verificationResult.token
+                                },
+                                dataType: 'json',
+                                success: function(json) {
+                                    if (json['error']) {
+                                        alert(json['error']);
+                                        btn.disabled = false;
+                                    } else if (json['redirect']) {
+                                        location = json['redirect'];	
+                                    }
+                                },
+                                error: function(xhr, ajaxOptions, thrownError) {
+                                    console.error(xhr.responseText);
+                                    alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+                                    btn.disabled = false;
                                 }
-                            },
-                            error: function(xhr, ajaxOptions, thrownError) {
-                                console.error(xhr.responseText);
-                                alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-                                btn.disabled = false;
-                            }
-                        });
+                            });
+
+                        } else {
+                            // This catches cancellations, failed OTP inputs, and validation timeouts
+                            console.error('Square Buyer Verification failed or was cancelled.');
+                            alert('Card verification failed. Please complete the OTP check or try another card.');
+                            btn.disabled = false;
+                        }
                     } else {
                         console.error(result.errors);
                         btn.disabled = false;
