@@ -561,11 +561,11 @@ class Squareup {
 				'reference_id' => $reference_id,
 				'billing_address' => ($billing_address) ? $billing_address : array(),
 				'buyer_email_address' => $email,
-				'buyer_phone_number' => $phone,
+//				'buyer_phone_number' => $phone,
 				'statement_description_identifier' => $statement_description_identifier,
 				'customer_details' => array(
-					'customer_initiated' => true
-//					'seller_keyed_in' => false
+					'customer_initiated' => true,
+					'seller_keyed_in' => false
 				)
 			)
 		);

@@ -94,24 +94,14 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		$default_content_security_policy  = "default-src 'self';\n";
 		$default_content_security_policy .= "script-src 'self' https://js.squareup.com https://js.squareupsandbox.com https://web.squarecdn.com https://sandbox.web.squarecdn.com 'unsafe-inline' 'unsafe-eval';\n";
 		$default_content_security_policy .= "style-src 'self' https://js.squareup.com https://js.squareupsandbox.com https://web.squarecdn.com https://sandbox.web.squarecdn.com https://fonts.googleapis.com 'unsafe-inline';\n";
-		$default_content_security_policy .= "font-src 'self' https://fonts.gstatic.com https://square-fonts-production-f.squarecdn.com https://d1g145x70srn7h.cloudfront.net;\n";
+		$default_content_security_policy .= "font-src 'self' https://fonts.gstatic.com https://square-fonts-production-f.squarecdn.com https://d1g145x70srn7h.cloudfront.net https://cash-f.squarecdn.com;\n";
 		$default_content_security_policy .= "img-src 'self' data: https://js.squareup.com https://js.squareupsandbox.com https://web.squarecdn.com https://sandbox.web.squarecdn.com;\n";
 		$default_content_security_policy .= "frame-src 'self' https://js.squareup.com https://js.squareupsandbox.com https://web.squarecdn.com https://sandbox.web.squarecdn.com https://connect.squareup.com https://connect.squareupsandbox.com https://api.squareupsandbox.com https://api.squareup.com;\n";
-		$default_content_security_policy .= "connect-src 'self' https://connect.squareup.com https://connect.squareupsandbox.com https://pci-connect.squareup.com https://pci-connect.squareupsandbox.com;\n";
+		$default_content_security_policy .= "connect-src 'self' https://connect.squareup.com https://connect.squareupsandbox.com https://pci-connect.squareup.com https://pci-connect.squareupsandbox.com https://*.squareup.com;\n";
 		$default_content_security_policy .= "base-uri 'self';\n";
 		$default_content_security_policy .= "form-action 'self' https://api.squareupsandbox.com https://api.squareup.com;";
 
 		$data['payment_square_default_csp'] = $default_content_security_policy;
-
-//		$default_content_security_policy  = "default-src 'self';\n";
-//		$default_content_security_policy .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.squarecdn.com https://js.squareup.com https://js.squareupsandbox.com https://sandbox.web.squarecdn.com/1.81.2/main-iframe.js https://web.squarecdn.com/1.81.2/main-iframe.js;\n";
-//		$default_content_security_policy .= "script-src-elem 'self' 'unsafe-inline' blob: https://*.squarecdn.com https://js.squareup.com https://js.squareupsandbox.com https://sandbox.web.squarecdn.com;\n";
-//		$default_content_security_policy .= "script-src-attr 'self' 'unsafe-inline' 'unsafe-hashes';\n";
-//		$default_content_security_policy .= "style-src 'self' 'unsafe-inline' https://*.squarecdn.com;\n";
-//		$default_content_security_policy .= "connect-src 'self' https://connect.squareup.com https://pci-connect.squareup.com https://connect.squareupsandbox.com https://pci-connect.squareupsandbox.com;\n";
-//		$default_content_security_policy .= "frame-src 'self' https://*.squarecdn.com https://connect.squareup.com https://api.squareup.com https://geoissuer.cardinalcommerce.com https://sandbox.web.squarecdn.com;\n";
-//		$default_content_security_policy .= "img-src 'self' data: https://*.squarecdn.com;\n";
-//		$default_content_security_policy .= "font-src 'self' https://*.squarecdn.com;";
 
 		$data['payment_squareup_status']                    = $this->getSettingValue('payment_squareup_status');
 		$data['payment_squareup_status_authorized']         = $this->getSettingValue('payment_squareup_status_authorized',$this->model_extension_payment_squareup->inferOrderStatusId('processing'));
@@ -1109,8 +1099,8 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		$this->load->model('setting/event');
 		$code = 'payment_squareup';
 		$app ='catalog/';
-		$route = 'extension/payment/squareup/eventViewCommonHeaderAfter';
-		$trigger = 'view/common/header/after';
+		$route = 'extension/payment/squareup/eventViewCheckoutConfirmAfter';
+		$trigger = 'view/checkout/confirm/after';
 		$this->model_setting_event->addEvent( $code, $app.$trigger, $route );
 	}
 

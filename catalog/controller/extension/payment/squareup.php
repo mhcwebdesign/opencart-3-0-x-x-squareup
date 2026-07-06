@@ -32,7 +32,7 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		}
 
 		$theme = $this->config->get('theme_' . $this->config->get('config_theme') . '_directory');
-		if (file_exists(DIR_TEMPLATE . $theme . '/stylesheet/squareup.css')) {
+		if (!empty($theme) && file_exists(DIR_TEMPLATE . $theme . '/stylesheet/squareup.css')) {
 			$this->document->addStyle('catalog/view/theme/' . $theme . '/stylesheet/squareup.css');
 		} else {
 			$this->document->addStyle('catalog/view/theme/default/stylesheet/squareup.css');
@@ -73,6 +73,11 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		$this->session->data['squareup_amount'] = $data['amount'];
 		$this->session->data['squareup_currency'] = $data['currency'];
 		$this->session->data['squareup_intent'] = $data['intent'];
+
+		$csp = $this->config->get('payment_squareup_content_security');
+		$csp = str_replace("\r", "", str_replace("\n", "", $csp));
+
+		$this->response->addHeader("Content-Security-Policy: " . $csp);
 
 		return $this->load->view('extension/payment/squareup_iframe', $data);
 	}
@@ -252,7 +257,10 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		}
 
 		$source_id = $this->request->post['source_id'];
-		$verification_token = empty($this->request->post['verification_token']) ? '' : $this->request->post['verification_token'];
+		$verification_token = '';
+		if (isset($this->request->post['verification_token'])) {
+			$verification_token = trim((string)$this->request->post['verification_token']);
+		}
 		$intent = $this->session->data['squareup_intent'];
 		$amount = $this->session->data['squareup_amount'];
 		$currency = $this->session->data['squareup_currency'];
@@ -529,14 +537,21 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		return $total;
 	}
 
-	// event handler for catalog/view/common/header/after
-	public function eventViewCommonHeaderAfter( &$route, &$data, &$output ) {
+	// event handler for catalog/view/checkout/confirm/after
+	public function eventViewCheckoutConfirmAfter( &$route, &$data, &$output ) {
 		if (!$this->config->get('payment_squareup_status')) {
 			return null;
 		}
 
-		$page_route = isset($this->request->get['route']) ? $this->request->get['route'] : '';
-		if ($page_route != 'checkout/checkout') {
+		if ($route != 'checkout/confirm') {
+			return null;
+		}
+
+		if (!isset($this->session->data['payment_method']['code'])) {
+			return null;
+		}
+
+		if ($this->session->data['payment_method']['code'] != 'squareup') {
 			return null;
 		}
 
@@ -545,14 +560,9 @@ class ControllerExtensionPaymentSquareup extends Controller {
 		}
 
 		$csp = $this->config->get('payment_squareup_content_security');
+		$csp = str_replace("\r", "", str_replace("\n", "", $csp));
 
-		if ($csp) {
-			$search = '<title>';
-			$add = '<meta http-equiv="Content-Security-Policy" content="';
-			$add .= $csp;
-			$add .= '">';
-			$output = str_replace($search,$add."\n".$search,$output);
-		}
+		$this->response->addHeader("Content-Security-Policy: " . $csp);
 
 		return null;
 	}

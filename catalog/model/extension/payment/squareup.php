@@ -293,8 +293,8 @@ class ModelExtensionPaymentSquareup extends Model {
 
 		if (!empty($billing_country_info)) {
 			$billing_address = array(
-//				'first_name' => $order_info['payment_firstname'],
-//				'last_name' => $order_info['payment_lastname'],
+				'first_name' => $order_info['payment_firstname'],
+				'last_name' => $order_info['payment_lastname'],
 				'address_line_1' => $order_info['payment_address_1'],
 				'address_line_2' => $order_info['payment_address_2'],
 				'address_line_3' => '',
@@ -309,6 +309,9 @@ class ModelExtensionPaymentSquareup extends Model {
 				'country' => $billing_country_info['iso_code_2']
 //				'organization' => $order_info['payment_company']
 			);
+			if ($billing_country_info['iso_code_2']=='GB') {
+				$billing_address['administrative_district_level_1'] = '';
+			}
 		} else {
 			$error = $this->language->get('error_missing_billing_address');
 			throw new \Squareup\Exception($this->registry, $error);
@@ -503,7 +506,7 @@ class ModelExtensionPaymentSquareup extends Model {
 		// get OpenCart default currency and its total amount
 		$currency = $this->config->get('config_currency');
 		$amount = $order_amount;
-		
+
 		if ($this->config->get('payment_squareup_enable_sandbox')) {
 			$location_id = $this->config->get('payment_squareup_sandbox_location_id');
 			$access_token = $this->config->get('payment_squareup_sandbox_token');
