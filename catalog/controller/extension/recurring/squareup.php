@@ -72,24 +72,25 @@ class ControllerExtensionRecurringSquareup extends Controller {
 		// 2. Prepare the immediate response
 		ob_start();
 		echo json_encode(['status' => 'success', 'message' => 'Task started in background']);
-		
-		// 3. Force the server to send headers and close the connection
-		$size = ob_get_length();
-		header("Content-Length: $size");
-		header("Connection: close");
-		header("Content-Encoding: none");
-		ob_end_flush();
-		ob_flush();
-		flush();
-
-		// 4. (Optional) If using PHP-FPM, this is the most reliable way
+    
+		// 3. Clear the buffer cleanly based on the server environment
 		if (function_exists('fastcgi_finish_request')) {
+			// PHP-FPM: Closes connection instantly and cleanly without manual headers
+			ob_end_flush(); 
+			flush(); // Ensure OpenCart's output layer passes to FPM
 			fastcgi_finish_request();
+		} else {
+			// Fallback for non-FPM setups (Apache mod_php / CGI)
+			$size = ob_get_length();
+			header("Content-Length: $size");
+			header("Connection: close");
+			ob_end_flush(); // Outputs and closes the buffer
+			flush();        // Forces the web server to send it to the client
 		}
 
-		// 5. Now do our cron-task logic here
+		// 4. Squareup cron-task logic goes here
 		$this->load->language('extension/payment/squareup');
-		
+
 		$this->load->model('extension/payment/squareup');
 
 		if (!$this->model_extension_payment_squareup->validateCRON()) {
