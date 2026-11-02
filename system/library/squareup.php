@@ -18,6 +18,7 @@ class Squareup {
 	const ENDPOINT_CUSTOMERS = 'customers';
 	const ENDPOINT_CUSTOMERS_SEARCH = 'customers/search';
 	const ENDPOINT_LOCATIONS = 'locations';
+	const ENDPOINT_MERCHANT = 'merchants/me';
 	const ENDPOINT_ORDERS = 'orders';
 	const ENDPOINT_PAYMENTS = 'payments';
 	const ENDPOINT_PAYMENT_LINKS = 'online-checkout/payment-links';
@@ -583,6 +584,18 @@ class Squareup {
 
 		$result = $this->api($request_data);
 		return $result;
+	}
+
+	public function retrieveMerchant($access_token) {
+		// see https://developer.squareup.com/reference/square/merchants-api/retrieve-merchant
+		$request_data = array(
+			'method' => 'GET',
+			'endpoint' => self::ENDPOINT_MERCHANT,
+			'auth_type' => 'Bearer',
+			'token' => $access_token
+		);
+		$api_result = $this->api($request_data);
+		return isset($api_result['merchant']) ? $api_result : null;
 	}
 
 	public function lowestDenomination($value, $currency) {

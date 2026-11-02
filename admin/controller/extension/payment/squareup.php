@@ -683,7 +683,8 @@ class ControllerExtensionPaymentSquareup extends Controller {
 			}
 
 			$previous_setting['payment_squareup_merchant_id'] = $token['merchant_id'];
-			$previous_setting['payment_squareup_merchant_name'] = ''; // only available in v1 of the API, not populated for now
+			$merchant = $this->squareup->retrieveMerchant($token['access_token']);
+			$previous_setting['payment_squareup_merchant_name'] = empty($merchant['merchant']['business_name']) ? '' : $merchant['merchant']['business_name'];
 			$previous_setting['payment_squareup_access_token'] = $token['access_token'];
 			$previous_setting['payment_squareup_refresh_token'] = $token['refresh_token'];
 			$previous_setting['payment_squareup_access_token_expires'] = $token['expires_at'];
